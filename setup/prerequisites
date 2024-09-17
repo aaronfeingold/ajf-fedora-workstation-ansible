@@ -2,6 +2,17 @@
 
 set -e
 
+# Prompt the user for AWS credentials
+read -p "Enter your AWS Access Key ID: " AWS_ACCESS_KEY_ID
+read -sp "Enter your AWS Secret Access Key: " AWS_SECRET_ACCESS_KEY
+echo
+read -p "Enter your AWS Default Region: " AWS_DEFAULT_REGION
+
+# Export AWS credentials as environment variables
+export AWS_ACCESS_KEY_ID
+export AWS_SECRET_ACCESS_KEY
+export AWS_DEFAULT_REGION
+
 # Check if ansible is installed
 setup_ansible () {
 
