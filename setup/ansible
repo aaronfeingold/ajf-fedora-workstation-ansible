@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e
+
+# Check if ansible is installed
+setup_ansible () {
+
+    if ! command -v ansible &> /dev/null
+    then
+        echo "Ansible is not installed. Installing Ansible..."
+
+        # Update system packages
+        sudo dnf update -y
+
+        # Install Ansible
+        sudo dnf install ansible -y
+
+        echo "Ansible installed successfully!"
+    else
+        echo 'ansible is installed.'
+        ansible --version
+    fi
+}
+
+setup_ansible
