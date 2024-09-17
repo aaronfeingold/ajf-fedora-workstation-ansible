@@ -4,19 +4,21 @@
 
 ### Description
 - A base playbook for new EC2
-- Provides trivialized install for ordinary packages:
-  -
+- Provides install configuration for:
+  - AWS CLI
+  - Pyenv
+  - Pipenv
 
 ## Contents
 
-### Pre Requisites
-- Python 3.11.0
+### Prerequisites
+- Fedora 37 workstation
+- Python 2.4
 - Ansible 2.14.11
-- **If ansible is not installed on the machine already, or you are unsure, run:**
-```
-chmod +x setup/ansible
-./setup/ansible
-```
+- AWS User Account + Credentials
+  - <AWS_ACCESS_KEY_ID>
+  - <AWS_SECRET_ACCESS_KEY>
+
 ### User Manual
 
 **Getting Started**
@@ -25,6 +27,14 @@ chmod +x setup/ansible
 ```
    git clone https://github.com/aaronfeingold/ajf-ansible.git
    cd ajf-live-re-wire
+```
+**Prerequisite CLI**
+- This will configure AWS envs vars by user
+- Note: must have AWS creds ready to set in environment
+  - note: default region and output are given if non provided
+```
+chmod +x setup/prerequisites
+./setup/prerequisites
 ```
 - Execute playbook
 ```
