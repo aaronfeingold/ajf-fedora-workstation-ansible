@@ -6,8 +6,9 @@
 - A base playbook for new EC2
 - Provides install configuration for:
   - AWS CLI
-  - Pyenv
-  - Pipenv
+  - __Under Construction__
+    - Pyenv
+    - Pipenv
 
 ## Contents
 
@@ -29,14 +30,14 @@
    cd ajf-live-re-wire
 ```
 **Prerequisite CLI**
-- This will configure AWS envs vars by user
+- This will configure AWS envs vars by
 - Note: must have AWS creds ready to set in environment
   - note: default region and output are given if non provided
 ```
 chmod +x setup/prerequisites
 ./setup/prerequisites
 ```
-- Execute playbook
+**Execute Playbook**
 ```
 chmod +x run_playbook
 ./run_playbook
