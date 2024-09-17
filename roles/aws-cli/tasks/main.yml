@@ -96,23 +96,23 @@
     path: "/tmp/awscliv2.sig"
     state: absent
 
+# Configure AWS CLI
 - name: Configure AWS CLI using environment variables
   command: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
   environment:
     AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-    AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-    AWS_DEFAULT_REGION: "{{ lookup('env', 'AWS_DEFAULT_REGION') }}"
 
 - name: Configure AWS CLI secret access key using environment variables
   command: aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
   environment:
-    AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
     AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-    AWS_DEFAULT_REGION: "{{ lookup('env', 'AWS_DEFAULT_REGION') }}"
 
 - name: Configure AWS CLI default region using environment variables
   command: aws configure set region $AWS_DEFAULT_REGION
   environment:
-    AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-    AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
     AWS_DEFAULT_REGION: "{{ lookup('env', 'AWS_DEFAULT_REGION') }}"
+N
+- name: Configure AWS CLI default output to JSON
+  command: aws configure set output json
+  environment:
+    AWS_DEFAULT_OUTPUT: "{{ lookup('env', 'AWS_DEFAULT_OUTPUT') }}"
