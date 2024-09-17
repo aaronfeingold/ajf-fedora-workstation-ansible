@@ -1,0 +1,57 @@
+---
+# Install Fedora dependencies for pyenv
+- name: Install system dependencies
+  become: yes
+  dnf:
+    name:
+      - gcc
+      - zlib-devel
+      - bzip2
+      - bzip2-devel
+      - readline-devel
+      - sqlite
+      - sqlite-devel
+      - openssl-devel
+      - tk-devel
+      - libffi-devel
+      - xz-devel
+      - git
+      - curl
+      - wget
+      - make
+    state: present
+
+# Install pyenv by running the shell script
+- name: Install pyenv
+  shell: curl https://pyenv.run | bash
+  args:
+    executable: /bin/bash
+
+# Configure pyenv in .bashrc
+- name: Add pyenv configuration to .bashrc
+  lineinfile:
+    path: ~/.bashrc
+    line: |
+      export PATH="$HOME/.pyenv/bin:$PATH"
+      eval "$(pyenv init --path)"
+      eval "$(pyenv init -)"
+      eval "$(pyenv virtualenv-init -)"
+    create: yes
+
+# Reload bash to apply pyenv changes
+- name: Source .bashrc to apply pyenv changes
+  shell: source ~/.bashrc
+
+# Install Python 3.11 using pyenv
+- name: Install Python 3.11 using pyenv
+  shell: |
+    source ~/.bashrc
+    pyenv install 3.11.0
+    pyenv global 3.11.0
+  args:
+    executable: /bin/bash
+
+# Install pipenv using pip
+- name: Install pipenv
+  pip:
+    name: pipenv
