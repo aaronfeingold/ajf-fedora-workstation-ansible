@@ -1,0 +1,6 @@
+---
+- name: Install AWS CLI on Fedora Linux
+  hosts: all
+  become: yes
+  roles:
+    - aws-cli

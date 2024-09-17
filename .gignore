@@ -1,0 +1,6 @@
+.env
+.DS_Store
+.cache
+test.py
+package/
+*.zip
