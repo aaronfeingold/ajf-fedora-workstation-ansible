@@ -4,3 +4,4 @@
   become: yes
   roles:
     - aws-cli
+    - pyenv-pipenv
