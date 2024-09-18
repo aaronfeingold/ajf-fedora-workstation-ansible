@@ -87,27 +87,3 @@ setup_ansible () {
 }
 
 setup_ansible
-
-# Function to create Ansible vault and write the environment variables
-create_vault_file() {
-    local vault_file="aws_vars.yml"
-
-    # Ensure vault file exists
-    if [ -f "$vault_file" ]; then
-        echo "Vault file already exists: $vault_file"
-    else
-        touch "$vault_file"
-        echo "Created vault file: $vault_file"
-    fi
-
-    # Encrypt the variables into the vault
-    ansible-vault encrypt_string "$AWS_ACCESS_KEY_ID" --name 'aws_access_key_id' >> "$vault_file"
-    ansible-vault encrypt_string "$AWS_SECRET_ACCESS_KEY" --name 'aws_secret_access_key' >> "$vault_file"
-    ansible-vault encrypt_string "$AWS_DEFAULT_REGION" --name 'aws_secret_access_key' >> "$vault_file"
-    ansible-vault encrypt_string "$AWS_DEFAULT_OUTPUT" --name 'aws_default_output' >> "$vault_file"
-
-    echo "Encrypted variables saved to $vault_file"
-}
-
-# Call the function to create the vault and store the variables
-create_vault_file

@@ -2,8 +2,5 @@
 - name: Install AWS CLI on Fedora Linux
   hosts: all
   become: yes
-  vars_files:
-    - aws_vars.yml
-
   roles:
     - aws-cli

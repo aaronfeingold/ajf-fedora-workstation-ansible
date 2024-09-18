@@ -96,15 +96,3 @@
     file:
       path: "/tmp/awscliv2.sig"
       state: absent
-
-  - name: Configure AWS CLI using environment variables
-    command: aws configure set aws_access_key_id {{ aws_access_key_id }}
-
-  - name: Configure AWS CLI secret access key using environment variables
-    command: aws configure set aws_secret_access_key {{  aws_secret_access_key }}
-
-  - name: Configure AWS CLI default region using environment variables
-    command: aws configure set region {{  aws_secret_access_key }}
-
-  - name: Configure AWS CLI default output using environment variables
-    command: aws configure set region {{  aws_default_output }}
