@@ -2,6 +2,4 @@
 
 set -e
 
-export $(cat .env | xargs)
-
 ansible-playbook -i inventory.ini playbook.yml --ask-become-pass
