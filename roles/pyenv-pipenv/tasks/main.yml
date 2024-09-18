@@ -21,11 +21,18 @@
       - make
     state: present
 
+# Check if pyenv is already installed
+- name: Check if pyenv directory exists
+  stat:
+    path: /root/.pyenv
+  register: pyenv_status
+
 # Install pyenv by running the shell script
 - name: Install pyenv
   shell: curl https://pyenv.run | bash
   args:
     executable: /bin/bash
+  when: not pyenv_status.stat.exists
 
 # Configure pyenv in .bashrc
 - name: Add pyenv configuration to .bashrc
@@ -37,10 +44,12 @@
       eval "$(pyenv init -)"
       eval "$(pyenv virtualenv-init -)"
     create: yes
+  when: not pyenv_status.stat.exists
 
 # Reload bash to apply pyenv changes
 - name: Source .bashrc to apply pyenv changes
   shell: source ~/.bashrc
+  when: not pyenv_status.stat.exists
 
 # Install Python 3.11 using pyenv
 - name: Install Python 3.11 using pyenv
@@ -50,9 +59,11 @@
     pyenv global 3.11.0
   args:
     executable: /bin/bash
+  when: not pyenv_status.stat.exists
 
 # Install pipenv using pip
 - name: Install pipenv
   pip:
     name: pipenv
     executable: "{{ ansible_env.HOME }}/.pyenv/shims/pip"
+  when: pyenv_status.stat.exists
