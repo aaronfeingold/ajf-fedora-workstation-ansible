@@ -1,15 +1,4 @@
 ---
-- hosts: localhost
-  vars:
-    aws_default_region: "{{ lookup('env', 'AWS_DEFAULT_REGION') | default('us-east-1') }}"
-    aws_default_output: "{{ lookup('env', 'AWS_DEFAULT_OUTPUT') | default('json') }}"
-    aws_access_key_id: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
-    aws_secret_access_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
-  tasks:
-    - name: Show AWS Region
-      debug:
-        msg: "AWS Region is {{ aws_default_region }}"
-
 - name: Ensure system packages are up-to-date
   dnf:
     name: "*"
@@ -108,15 +97,22 @@
     path: "/tmp/awscliv2.sig"
     state: absent
 
-# Configure AWS CLI
 - name: Configure AWS CLI using environment variables
-  command: aws configure set aws_access_key_id {{ aws_access_key_id }}
+  command: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
 
 - name: Configure AWS CLI secret access key using environment variables
-  command: aws configure set aws_secret_access_key {{ aws_secret_access_key }}
+  command: aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+  environment:
+    AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
 
 - name: Configure AWS CLI default region using environment variables
-  command: aws configure set region {{ aws_default_region }}
+  command: aws configure set region $AWS_DEFAULT_REGION
+  environment:
+    AWS_DEFAULT_REGION: "{{ lookup('env', 'AWS_DEFAULT_REGION') }}"
 
-- name: Configure AWS CLI default output to JSON
-  command: aws configure set output {{ aws_default_output }}
+- name: Configure AWS CLI default output using environment variables
+  command: aws configure set region $AWS_DEFAULT_OUTPUT
+  environment:
+    AWS_DEFAULT_OUTPUT: "{{ lookup('env', 'AWS_DEFAULT_OUTPUT') }}"
