@@ -55,3 +55,4 @@
 - name: Install pipenv
   pip:
     name: pipenv
+    executable: "{{ ansible_env.HOME }}/.pyenv/shims/pip"
