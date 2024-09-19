@@ -36,9 +36,6 @@ install_python() {
     fi
 }
 
-# Check if Python is installed and version
-check_python
-
 # Check if ansible is installed
 setup_ansible () {
 
@@ -59,4 +56,25 @@ setup_ansible () {
     fi
 }
 
+# Function to configure sudoers for Ansible
+setup_sudoers() {
+    USERNAME=$(whoami)
+    echo "Current user: $USERNAME"
+    SUDOERS_FILE="/etc/sudoers.d/ansible"
+
+    if sudo grep -q "$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/ansible-playbook" "$SUDOERS_FILE"; then
+        echo "Sudoers entry for $USERNAME already exists."
+    else
+        echo "Configuring sudoers for Ansible..."
+
+        # Create or modify the sudoers file
+        echo "$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/ansible-playbook" | sudo tee "$SUDOERS_FILE" > /dev/null
+
+        echo "Sudoers configuration updated."
+    fi
+}
+
+# Check if Python is installed and version
+check_python
 setup_ansible
+setup_sudoers
