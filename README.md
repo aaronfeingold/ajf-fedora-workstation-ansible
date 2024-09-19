@@ -4,10 +4,11 @@
 
 ### Description
 - A base playbook for new EC2
-- Provides installation and configuration for:
-  - AWS CLI
-  - Pyenv
-  - Pipenv
+- Provides installation and opinionated configurations for:
+    - aws-cli
+    - pyenv-pipenv
+    - nodejs-nvm
+
 
 ## Prerequisites
 - Fedora 37 workstation
@@ -24,7 +25,7 @@
    cd ajf-live-re-wire
 ```
 **Prerequisite CLI**
-- Use if need be.
+- Use the interactive bash setup if need be (will be prompted for passwords)
 ```
 chmod +x setup/prerequisites
 ./setup/prerequisites
