@@ -27,6 +27,7 @@
       name: nodejs
       state: present
     when: node_version.rc != 0
+    become: yes
 
   - name: Check if nvm is installed
     command: command -v nvm
@@ -52,9 +53,6 @@
     args:
       executable: /bin/bash
 
-  - name: Print a variable
-    debug:
-      msg: "The value of the variable is {{ add_cdnvm_to_bashrc }}"
   - name: Add custom function and alias to .bashrc for easy NVM project management
     lineinfile:
       path: "{{ user_home_dir.stdout }}/.bashrc"
