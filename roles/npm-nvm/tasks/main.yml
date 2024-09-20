@@ -10,14 +10,6 @@
     args:
       executable: /bin/bash
 
-  - name: print the user
-    debug:
-      msg: "{{ username_on_the_host.stdout }}"
-
-  - name: print the homedir
-    debug:
-      msg: "{{ user_home_dir.stdout }}"
-
   - name: Check if Node.js is installed
     command: node --version
     register: node_version
