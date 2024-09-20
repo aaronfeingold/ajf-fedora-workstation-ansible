@@ -1,28 +1,15 @@
 ---
-  - name: get the username running the deploy
-    become: false
-    local_action: command whoami
-    register: username_on_the_host
-
-  - name: get the home directory of the user running the deploy
-    shell: "getent passwd '{{ username_on_the_host.stdout }}' | cut -d: -f6"
-    register: user_home_dir
-    args:
-      executable: /bin/bash
-
   - name: Check if Node.js is installed
     command: node --version
     register: node_version
     ignore_errors: true
-    become: false
 
   - name: Print node standard out
     debug:
-      msg: "node_version {{ node_version }}"
-    when: node_version.rc != 0
-    become: false
+      msg: "found installed node_version {{ node_version.stdout }}"
+    when: node_version.rc == 0
 
-  - name: Install Node.js and npm if not installed
+  - name: Install Node.js and npm if not installed via dns
     dnf:
       name: nodejs
       state: present
@@ -33,48 +20,39 @@
     command: command -v nvm
     register: nvm_check
     ignore_errors: true
+  - when: nvm_check.rc == 0
+    block:
+      - name: Install NVM using GitHub install script
+        shell: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+        become: false
+        when: nvm_check.rc == 0
 
-  - name: Install NVM using GitHub install script
-    shell: |
-      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-    become: false
-    when: nvm_check.rc  != 0
-
-  - name: Ensure NVM is installed and default Node.js version is set
-    shell: |
-      if [ -s "{{ user_home_dir.stdout }}/.nvm/nvm.sh" ]; then
-        . "{{ user_home_dir.stdout }}/.nvm/nvm.sh"
-        nvm install node
-        nvm alias default node
-      else
-        echo "NVM is not installed properly"
-        exit 1
-      fi
-    args:
-      executable: /bin/bash
+      - name: Ensure NVM is installed and default Node.js version is set
+        shell: |
+          if [ -s "{{ ansible_env.HOME }}/.nvm/nvm.sh" ]; then
+            . "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+            nvm install node
+            nvm alias default node
+          else
+            echo "NVM is not installed properly"
+            exit 1
+          fi
+        args:
+          executable: /bin/bash
 
   - name: Check if cdnvm function already exists in .bashrc
-    command: grep -c "cdnvm()" "{{ user_home_dir.stdout }}/.bashrc"
+    command: grep -c "cdnvm()" "{{ ansible_env.HOME }}/.bashrc"
     register: cdnvm_exists
     changed_when: false
     failed_when: false
 
   - name: Add custom function and alias to .bashrc for easy NVM project management
-    lineinfile:
-      path: "{{ user_home_dir.stdout }}/.bashrc"
+    blockinfile:
+      path: "{{ ansible_env.HOME }}/.bashrc"
       block: "{{ lookup('file', 'cdnvm_function.sh') }}"
       marker: "# {mark} ANSIBLE MANAGED BLOCK - CDNVM FUNCTION"
       create: yes
     when:
       - add_cdnvm_to_bashrc == "true"
       - cdnvm_exists.rc != 0 or cdnvm_exists.stdout == "0"
-
-  - name: Debug .bashrc content
-    shell: cat {{ user_home_dir.stdout }}/.bashrc
-    register: bashrc_content
-    args:
-      executable: /bin/bash
-
-  - name: Print .bashrc content
-    debug:
-      msg: "{{ bashrc_content.stdout }}"
