@@ -74,7 +74,6 @@ setup_sudoers() {
     fi
 }
 
-# Check if Python is installed and version
 check_python
 setup_ansible
 setup_sudoers
