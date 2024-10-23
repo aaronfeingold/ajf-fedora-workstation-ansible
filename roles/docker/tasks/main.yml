@@ -1,4 +1,9 @@
 ---
+- name: Get current username
+  command: whoami
+  register: current_user
+  changed_when: false
+
 - name: Check if Docker is already installed
   command: docker --version
   register: docker_check
@@ -52,7 +57,7 @@
   become: true
 
 - name: Check if user is already in docker group
-  command: groups {{ ansible_user }}
+  command: groups {{ current_user.stdout }}
   register: user_groups
   changed_when: false
 
@@ -65,7 +70,7 @@
 
 - name: Add user to docker group
   user:
-    name: "{{ ansible_user }}"
+    name: "{{ current_user.stdout }}"
     groups: docker
     append: yes
   become: true
@@ -78,3 +83,8 @@
     executable: pip3
   become: true
   when: docker_compose_check.rc != 0
+
+- name: Display Docker version
+  debug:
+    msg: "Docker installed successfully. You may need to log out and back in for group changes to take effect."
+  when: docker_check.rc == 0
