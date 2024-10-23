@@ -5,3 +5,7 @@
     - aws-cli
     - pyenv-pipenv
     - npm-nvm
+    - redis
+    - postgresql
+    - docker
+    - poetry
