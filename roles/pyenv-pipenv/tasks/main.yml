@@ -6,17 +6,19 @@
     ignore_errors: yes
 
   - name: Check if Python 3.11.10 is installed via pyenv
-    shell: pyenv versions --bare | grep 3.11.10
+    shell: "{{ ansible_env.HOME }}/.pyenv/bin/pyenv versions --bare | grep 3.11.10"
     register: python_version_status
+    environment:
+      PATH: "{{ ansible_env.HOME }}/.pyenv/bin:{{ ansible_env.HOME }}/.pyenv/shims:{{ ansible_env.PATH }}"
     when: pyenv_status.stat.exists
-    ignore_errors: yes
     changed_when: false
     failed_when: false
+    ignore_errors: true
+
 
   - when: not pyenv_status.stat.exists or not python_version_status.stdout
     block:
-      # Install Fedora dependencies
-      - name: Install system dependencies
+      - name: Install Fedora dependencies
         become: yes
         dnf:
           name:
@@ -43,30 +45,26 @@
         args:
           executable: /bin/bash
 
-      # Configure pyenv in .bashrc if pyenv was installed
       - name: Add pyenv configuration to .bashrc
         lineinfile:
-          path: ~/.bashrc
+          path: "{{ ansible_env.HOME }}/.bashrc"
           line: |
-
             export PATH="$HOME/.pyenv/bin:$PATH"
             eval "$(pyenv init --path)"
             eval "$(pyenv init -)"
             eval "$(pyenv virtualenv-init -)"
           create: yes
+          insertafter: EOF
 
-      # Install Python 3.11 using pyenv if pyenv is installed and Python 3.11 is not installed
+      #if pyenv is installed and Python 3.11 is not
       - name: Install Python 3.11 using pyenv
-        shell: |
-          source {{ ansible_env.HOME }}/.bashrc
-          pyenv install 3.11.10
-          pyenv global 3.11.10
-          pyenv exec python -m ensurepip
+        shell: "{{ ansible_env.HOME }}/.pyenv/bin/pyenv install 3.11.10 && {{ ansible_env.HOME }}/.pyenv/bin/pyenv global 3.11.10"
+        environment:
+          PATH: "{{ ansible_env.HOME }}/.pyenv/bin:{{ ansible_env.HOME }}/.pyenv/shims:{{ ansible_env.PATH }}"
         args:
           executable: /bin/bash
 
-      # Install pipenv using pip
-      - name: Install pipenv
+      - name: Install pipenv using pip
         pip:
           name: pipenv
           executable: "{{ ansible_env.HOME }}/.pyenv/shims/pip"

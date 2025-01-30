@@ -1,79 +1,43 @@
 #!/bin/bash
 
-set -e
+set -e  # Exit on error
 
-
-# Function to check if Python is installed (pyenv or otherise)
+# Function to check if Python 3 is installed
 check_python() {
     if command -v python3 &>/dev/null; then
-        PYTHON_VERSION=$(python3 --version 2>&1)
-        echo "Python is installed: $PYTHON_VERSION"
+        echo "Python is installed: $(python3 --version)"
     else
-        echo "Python is not installed."
-        install_python
+        echo "Python is not installed. Installing Python 3.11..."
+        sudo dnf install -y python3.11
     fi
 }
 
-# Function to install Python 3.11.0 globally on Fedora
-install_python() {
-    echo "Installing Python 3.11.0..."
-
-    # Update the package repository
-    sudo dnf -y update
-
-    # Enable the Fedora Modular repository
-    sudo dnf module reset python
-    sudo dnf module enable python:3.11
-
-    # Install Python 3.11
-    sudo dnf install -y python3.11
-
-    # Verify the installation
-    if command -v python3.11 &>/dev/null; then
-        echo "Python 3.11.0 has been installed successfully."
-    else
-        echo "Failed to install Python 3.11.0."
-    fi
-}
-
-# Check if ansible is installed
-setup_ansible () {
-
-    if ! command -v ansible &> /dev/null
-    then
+# Function to install Ansible if not installed
+setup_ansible() {
+    if ! command -v ansible &>/dev/null; then
         echo "Ansible is not installed. Installing Ansible..."
-
-        # Update system packages
-        sudo dnf update -y
-
-        # Install Ansible
-        sudo dnf install ansible -y
-
+        sudo dnf install -y ansible
         echo "Ansible installed successfully!"
     else
-        echo 'ansible is installed.'
-        ansible --version
+        echo "Ansible is already installed: $(ansible --version | head -n1)"
     fi
 }
 
-# Function to configure sudoers for Ansible
+# Function to configure sudoers for Ansible (restricted)
 setup_sudoers() {
     USERNAME=$(whoami)
-    echo "Current user: $USERNAME"
     SUDOERS_FILE="/etc/sudoers.d/ansible"
 
     if sudo grep -q "$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/ansible-playbook" "$SUDOERS_FILE"; then
         echo "Sudoers entry for $USERNAME already exists."
     else
         echo "Configuring sudoers for Ansible..."
-
-        # Create or modify the sudoers file
-        echo "$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/ansible-playbook" | sudo tee "$SUDOERS_FILE" > /dev/null
-
-        echo "Sudoers configuration updated."
+        echo "$USERNAME ALL=(ALL) NOPASSWD: /usr/bin/ansible-playbook /home/$USERNAME/ansible-playbooks/*.yml" | sudo tee "$SUDOERS_FILE" > /dev/null
+        echo "Sudoers configuration updated (restricted to playbooks in ~/ansible-playbooks)."
     fi
 }
 
+# Run setup functions
 check_python
 setup_ansible
 setup_sudoers
