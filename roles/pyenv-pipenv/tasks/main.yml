@@ -6,12 +6,14 @@
     ignore_errors: yes
 
   - name: Check if Python 3.11.10 is installed via pyenv
-    shell: pyenv versions --bare | grep 3.11.10
+    shell: "{{ ansible_env.HOME }}/.pyenv/bin/pyenv versions --bare | grep 3.11.10"
     register: python_version_status
+    environment:
+      PATH: "{{ ansible_env.HOME }}/.pyenv/bin:{{ ansible_env.HOME }}/.pyenv/shims:{{ ansible_env.PATH }}"
     when: pyenv_status.stat.exists
-    ignore_errors: yes
     changed_when: false
     failed_when: false
+    ignore_errors: true
 
   - when: not pyenv_status.stat.exists or not python_version_status.stdout
     block:
