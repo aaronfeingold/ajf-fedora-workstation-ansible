@@ -2,10 +2,11 @@
 - name: Setup AJF Fedora Workstation
   hosts: all
   roles:
-    - aws-cli
-    - pyenv-pipenv
-    - npm-nvm
-    - redis
-    - postgresql
-    - docker
-    - poetry
+    # - aws-cli
+    # - pyenv-pipenv
+    # - npm-nvm
+    # - redis
+    # - postgresql
+    # - docker
+    # - poetry
+    - gloud-cli
