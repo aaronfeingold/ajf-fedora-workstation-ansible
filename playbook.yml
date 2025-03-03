@@ -11,3 +11,4 @@
     - poetry
     - gcloud-cli
     - packer
+    - ml-training
