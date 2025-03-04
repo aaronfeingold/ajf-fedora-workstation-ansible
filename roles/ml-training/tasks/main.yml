@@ -1,4 +1,3 @@
-# roles/ml-training/tasks/main.yml in your Ansible repository
 ---
 - name: Install ML training system dependencies
   dnf:
