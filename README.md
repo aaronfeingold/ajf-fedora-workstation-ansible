@@ -11,7 +11,7 @@
 
 
 ## Prerequisites
-- Fedora 37 workstation
+- Fedora 41
 - Python 2.4
 - Ansible 2.14.11
 
@@ -22,7 +22,7 @@
 
 ```
    git clone https://github.com/aaronfeingold/ajf-ansible.git
-   cd ajf-live-re-wire
+   cd ajf-ansible
 ```
 **Prerequisite CLI**
 - Use the interactive bash setup if need be (will be prompted for passwords)
