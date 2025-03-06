@@ -76,13 +76,6 @@
   become: true
   when: '"docker" not in user_groups.stdout'
 
-- name: Install docker-compose via dnf
-  dnf:
-    name: docker-compose
-    state: present
-  become: true
-  when: docker_compose_check.rc != 0
-
 - name: Display Docker version
   debug:
     msg: "Docker installed successfully. You may need to log out and back in for group changes to take effect."
