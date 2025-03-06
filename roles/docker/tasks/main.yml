@@ -76,11 +76,10 @@
   become: true
   when: '"docker" not in user_groups.stdout'
 
-- name: Install docker-compose via pip
-  pip:
+- name: Install docker-compose via dnf
+  dnf:
     name: docker-compose
-    state: latest
-    executable: pip3
+    state: present
   become: true
   when: docker_compose_check.rc != 0
 
