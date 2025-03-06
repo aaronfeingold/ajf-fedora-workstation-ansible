@@ -76,14 +76,6 @@
   become: true
   when: '"docker" not in user_groups.stdout'
 
-- name: Install docker-compose via pip
-  pip:
-    name: docker-compose
-    state: latest
-    executable: pip3
-  become: true
-  when: docker_compose_check.rc != 0
-
 - name: Display Docker version
   debug:
     msg: "Docker installed successfully. You may need to log out and back in for group changes to take effect."
