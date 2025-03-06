@@ -2,13 +2,13 @@
 - name: Setup AJF Fedora Workstation
   hosts: all
   roles:
-    - aws-cli
-    - pyenv-pipenv
-    - npm-nvm
-    - redis
-    - postgresql
-    - docker
-    - poetry
-    - gcloud-cli
-    - packer
-    - ml-training
+    - { role: aws-cli, tags: ['base', 'aws'] }
+    - { role: pyenv-pipenv, tags: ['base', 'python'] }
+    - { role: npm-nvm, tags: ['base', 'node'] }
+    - { role: redis, tags: ['base', 'db'] }
+    - { role: postgresql, tags: ['base', 'db'] }
+    - { role: docker, tags: ['base', 'container'] }
+    - { role: poetry, tags: ['base', 'python'] }
+    - { role: gcloud-cli, tags: ['base', 'cloud'] }
+    - { role: packer, tags: ['base', 'infra'] }
+    - { role: ml-training, tags: ['ml'] }
