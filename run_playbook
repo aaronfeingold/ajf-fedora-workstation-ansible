@@ -2,5 +2,10 @@
 
 set -e
 
-ADD_CDNVM_TO_BASHRC="${1:-false}"
-ansible-playbook playbook.yml -e "add_cdnvm_to_bashrc=$ADD_CDNVM_TO_BASHRC"
+ANSIBLE_ARGS=""
+if [ ! -z "$1" ]; then
+  ANSIBLE_ARGS="$1"
+fi
+
+ADD_CDNVM_TO_BASHRC="${2:-false}"
+ansible-playbook playbook.yml $ANSIBLE_ARGS -e "add_cdnvm_to_bashrc=$ADD_CDNVM_TO_BASHRC"
