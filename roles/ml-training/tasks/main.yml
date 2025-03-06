@@ -51,3 +51,32 @@
       export TOKENIZERS_PARALLELISM=true
     marker: "# {mark} ANSIBLE MANAGED BLOCK - ML TRAINING SETTINGS"
     create: yes
+
+- name: Install NVIDIA dependencies
+  dnf:
+    name:
+      - kernel-devel
+      - kernel-headers
+      - gcc
+      - make
+      - dkms
+    state: present
+  become: yes
+
+- name: Install CUDA toolkit and drivers
+  shell: |
+    dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora41/x86_64/cuda-fedora41.repo
+    dnf clean all
+    dnf -y module install nvidia-driver:latest-dkms
+    dnf -y install cuda-toolkit-12-3
+  become: yes
+
+- name: Configure CUDA paths
+  blockinfile:
+    path: "{{ user_home }}/.bashrc"
+    block: |
+      # CUDA Paths
+      export PATH=/usr/local/cuda/bin:$PATH
+      export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - CUDA SETTINGS"
+    create: yes
